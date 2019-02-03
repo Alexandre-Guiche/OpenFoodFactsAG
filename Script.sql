@@ -1,0 +1,11 @@
+DROP DATABASE off;
+CREATE DATABASE off;
+USE off;
+CREATE TABLE Produit(Code_P INT NOT NULL AUTO_INCREMENT,Nom_P VARCHAR(100) NOT NULL,Grade CHAR(1),Magasin VARCHAR(20),PRIMARY KEY(Code_P));
+CREATE TABLE Categorie(ID_C INT NOT NULL AUTO_INCREMENT,Nom_C VARCHAR(100),PRIMARY KEY(ID_C));
+CREATE TABLE Substituer(Code_P_demande INT NOT NULL,Code_P_substitut INT NOT NULL,PRIMARY KEY(Code_P_demande, Code_P_substitut));
+CREATE TABLE Categorie_Produit(Code_P BIGINT NOT NULL,ID_C INT NOT NULL,PRIMARY KEY(Code_P, ID_C));
+ALTER TABLE Categorie_Produit ADD CONSTRAINT FK_Categorie_Produit_Code_P FOREIGN KEY (Code_P) REFERENCES Produit (Code_P);
+ALTER TABLE Categorie_Produit ADD CONSTRAINT FK_Categorie_Produit_ID_C FOREIGN KEY (ID_C) REFERENCES Catégorie (ID_C);
+ALTER TABLE Substituer ADD CONSTRAINT FK_Substituer_Code_P_demande FOREIGN KEY (Code_P_demande) REFERENCES Produit (Code_P);
+ALTER TABLE Substituer ADD CONSTRAINT FK_Substituer_Code_P_substitut FOREIGN KEY (Code_P_substitut) REFERENCES Produit (Code_P);
