@@ -13,17 +13,17 @@ def create_db():
 
 
 def fill_db():
-    categories_list = list()
     categories = dict()
     mydb = mysql.connector.connect(host="localhost", user="root", passwd="", database="off")
     pagenum = 1
     r = requests.get('https://fr.openfoodfacts.org/cgi/search.pl?page_size=10&page=' + str(pagenum) +
                      '&action=process&json=1').json()
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor(buffered=True)
     sql = "INSERT INTO produit (Nom_P, Grade, Magasin) VALUES (%s, %s, %s)"
     for i in range(10):
         products = make_product_list(10, r)
         for j in range(len(products)):
+            categories_list = list()
             val = (products[j].name, products[j].grade, products[j].stores)
             mycursor.execute(sql, val)
             categories_list.append((r["products"][j]["categories"].split(",")))
@@ -38,6 +38,15 @@ def fill_db():
                         mycursor.execute(
                             'INSERT INTO categorie_produit (Code_P, ID_C) VALUES'
                             '(' + str(product_code) + ',' + str(mycursor.lastrowid) + ')')
+                    else:
+                        mycursor.execute(
+                            "SELECT ID_C from Categorie_produit where Code_P = " + str(product_code) + ";")
+                        var = mycursor.fetchall()
+                        if var is not None and categories[category] not in var:
+                            mycursor.execute(
+                                'INSERT INTO categorie_produit (Code_P, ID_C) VALUES'
+                                '(' + str(product_code) + ',' + str(categories[category]) + ')')
+
         pagenum += 1
         r = requests.get('https://fr.openfoodfacts.org/cgi/search.pl?page_size=10&page=' + str(pagenum) +
                          '&action=process&json=1').json()
