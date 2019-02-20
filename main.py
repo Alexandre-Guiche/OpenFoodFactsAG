@@ -9,8 +9,8 @@ def select_product():
     categories = mycursor.fetchall()
     for cat in categories:
         print(cat)
-    id_cat = int(input("Select a category (ID): "))
-    mycursor.execute("SELECT * FROM categorie WHERE ID_C = " + str(id_cat))
+    id_cat = input("Select a category (ID): ")
+    mycursor.execute("SELECT * FROM categorie WHERE ID_C = " + id_cat)
     cat = mycursor.fetchone()
     print("Products in category '" + str(cat[1]) + "' :")
     mycursor.execute(
@@ -18,7 +18,20 @@ def select_product():
     products = mycursor.fetchall()
     for product in products:
         print(product)
-    return int(input("Select a product (ID): "))
+    return substitute(input("Select a product (ID): "), str(cat[0]))
+
+
+def substitute(id_product, category):
+    mycursor = mydb.cursor()
+    mycursor.execute(
+        "SELECT produit.Code_P, Nom_P, Grade FROM produit NATURAL JOIN categorie_produit where ID_C = " + category +
+        " ORDER BY Grade ASC")
+    best_product = mycursor.fetchone()
+    if str(best_product[0]) <= id_product:
+        return "This product is already the best in this category"
+    else:
+        return "The best product in this category is : " + best_product[1] + ", With a nutrition grade of " + \
+               best_product[2]
 
 
 if __name__ == '__main__':
