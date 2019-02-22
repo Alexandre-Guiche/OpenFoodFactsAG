@@ -1,6 +1,6 @@
 import mysql.connector
 
-mydb = mysql.connector.connect(host="localhost", user="root", passwd="", database="off")
+mydb = mysql.connector.connect(host="****", user="****", passwd="****", database="****")
 
 
 def register_substitution(id_product, id_substitute, category):
@@ -15,7 +15,7 @@ def register_substitution(id_product, id_substitute, category):
                              "(" + id_product + ", " + id_substitute + ", " + category + ")")
             print("Done!")
         else:
-            print("substitution alreay registered")
+            print("substitution already registered")
 
 
 def select_product():
