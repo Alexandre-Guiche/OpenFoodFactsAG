@@ -4,7 +4,7 @@ import mysql.connector
 
 
 def create_db():
-    mydb = mysql.connector.connect(host="localhost", user="root", passwd="")
+    mydb = mysql.connector.connect(host="***", user="***", passwd="***")
     file = open("Script.sql", 'r')
     query = file.readlines()
     cursor_db = mydb.cursor()
@@ -14,7 +14,7 @@ def create_db():
 
 def fill_db():
     categories_dict = dict()
-    mydb = mysql.connector.connect(host="localhost", user="root", passwd="", database="off")
+    mydb = mysql.connector.connect(host="***", user="***", passwd="***", database="***")
     pagenum = 1
     r = requests.get('https://fr.openfoodfacts.org/cgi/search.pl?page_size=10&page=' + str(pagenum) +
                      '&action=process&json=1').json()

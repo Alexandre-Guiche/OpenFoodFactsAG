@@ -1,6 +1,6 @@
 import mysql.connector
 
-mydb = mysql.connector.connect(host="****", user="****", passwd="****", database="****")
+mydb = mysql.connector.connect(host="***", user="***", passwd="***", database="***")
 
 
 def register_substitution(id_product, id_substitute, category):
