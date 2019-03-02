@@ -1,12 +1,19 @@
+"""
+This module is in charge of user intarractions
+"""
+
 import mysql.connector
 
-mydb = mysql.connector.connect(host="***", user="***", passwd="***", database="***")
+MYDB = mysql.connector.connect(host="localhost", user="root", passwd="", database="off")
 
 
 def register_substitution(id_product, id_substitute, category):
-    mycursor = mydb.cursor()
+    """
+    Asks if the user wants to register the substitution in the database
+    """
+    mycursor = MYDB.cursor()
     var = input("Do you wish to register that product substitution? Y/N")
-    if var == "Y" or var == "y":
+    if var in ("Y", "y"):
         mycursor.execute("select * from substituer where code_P_demande = " + id_product +
                          " AND code_P_substitut = " + id_substitute)
         rows = mycursor.fetchall()
@@ -19,7 +26,10 @@ def register_substitution(id_product, id_substitute, category):
 
 
 def select_product():
-    mycursor = mydb.cursor()
+    """
+    Asks the user to pick a category, then a product fom the selected category
+    """
+    mycursor = MYDB.cursor()
     mycursor.execute("SELECT * FROM categorie")
     categories = mycursor.fetchall()
     for cat in categories:
@@ -29,7 +39,8 @@ def select_product():
     cat = mycursor.fetchone()
     print("Products in category '" + str(cat[1]) + "' :")
     mycursor.execute(
-        "SELECT produit.Code_P, Nom_P FROM produit NATURAL JOIN categorie_produit where ID_C = " + str(cat[0]))
+        "SELECT produit.Code_P, Nom_P FROM produit NATURAL JOIN categorie_produit where ID_C = "
+        + str(cat[0]))
     products = mycursor.fetchall()
     for product in products:
         print(product)
@@ -37,21 +48,29 @@ def select_product():
 
 
 def substitute(id_product, category):
-    mycursor = mydb.cursor(buffered=True)
+    """
+    Selects the best product from the category of the chosen product
+    """
+    mycursor = MYDB.cursor(buffered=True)
     mycursor.execute(
-        "SELECT produit.Code_P, Nom_P, Grade FROM produit NATURAL JOIN categorie_produit where ID_C = " + category +
+        "SELECT produit.Code_P, Nom_P, Grade FROM produit "
+        "NATURAL JOIN categorie_produit where ID_C = " + category +
         " ORDER BY Grade ASC")
     best_product = mycursor.fetchone()
     if str(best_product[0]) == id_product:
         print("This product is already (one of) the best in this category")
     else:
-        print("The best product in this category is : " + best_product[1] + ", With a nutrition grade of " +
+        print("The best product in this category is : " + best_product[1] +
+              ", With a nutrition grade of " +
               best_product[2])
         register_substitution(id_product, str(best_product[0]), category)
 
 
 def find_substitute():
-    mycursor = mydb.cursor(buffered=True)
+    """
+    Shows every registered product substitution
+    """
+    mycursor = MYDB.cursor(buffered=True)
     mycursor.execute("SELECT Produit1.Nom_P, Produit2.Nom_P, Nom_C FROM Substituer "
                      "JOIN produit AS Produit1 ON Code_P_demande = Produit1.Code_P "
                      "JOIN produit AS produit2 ON Code_P_substitut = Produit2.Code_P "
@@ -62,6 +81,9 @@ def find_substitute():
 
 
 def main():
+    """
+    main function
+    """
     print("1- Substitute an aliment")
     print("2- Find substituted aliment")
     print("3- Exit")
